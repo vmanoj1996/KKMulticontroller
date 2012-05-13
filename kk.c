@@ -140,9 +140,9 @@
 //#define SINGLE_COPTER
 //#define DUAL_COPTER
 //#define TWIN_COPTER
-#define TRI_COPTER
+//#define TRI_COPTER
 //#define QUAD_COPTER
-//#define QUAD_X_COPTER
+#define QUAD_X_COPTER
 //#define Y4_COPTER
 //#define HEX_COPTER
 //#define Y6_COPTER
@@ -548,9 +548,74 @@ static void setup()
       GainInADC[ROLL]  < (ADC_MAX * 5) / 100 &&
       GainInADC[YAW]   < (ADC_MAX * 5) / 100) {
 
+    for (i = 0;i < 5;i++) {
+      LED = 1;
+      _delay_ms(25);
+      LED = 0;
+      _delay_ms(25);
+    }
+
     Set_EEPROM_Default_Config();
     while (1)
-      ;
+            ;
+  }
+
+  // Motor identification
+  if (GainInADC[PITCH] < (ADC_MAX * 5) / 100 &&
+      GainInADC[YAW]   < (ADC_MAX * 5) / 100) {
+
+    LED = 0;
+    int8_t motor = 0;
+    uint16_t delay = 0;
+    uint16_t time = TCNT2;
+    bool escInit = true;      // Wait until the ESCs have initialized
+
+    while (1) {
+      delay += (uint8_t)(TCNT2 - time);
+      time = TCNT2;
+
+      // 3Sec / 0.000128 = 23437 = 0x5B8D or
+      // 2.5Sec / 0.000128 = 19531 = 0x4C4B
+      // 0.5Sec / 0.000128 = 3906 = 0x0F42
+
+      if(escInit) {
+        if(delay > 23437) {    // 3.00 second delay (3.00 / .000128 = 23437.5)
+          escInit = false;
+          delay = 0;
+        }
+      } else if(LED) {
+        if(delay > 1171) {    // 0.15 second delay (0.15 / .000128 = 1171.8)
+          if(++motor > 6) {
+            motor = 0;
+          }
+          delay = 0;
+          LED = !LED;
+        }
+      } else {
+        if(delay > 7812) {    // 1.00 second delay (1.00 / .000128 = 7812.5)
+          delay = 0;
+          LED = !LED;
+        }
+      }
+
+      MotorOut1 = 0;
+      MotorOut2 = 0;
+      MotorOut3 = 0;
+      MotorOut4 = 0;
+      MotorOut5 = 0;
+      MotorOut6 = 0;
+
+      if(LED) {
+        if(motor == 1) { MotorOut1 = 50; }
+        if(motor == 2) { MotorOut2 = 50; }
+        if(motor == 3) { MotorOut3 = 50; }
+        if(motor == 4) { MotorOut4 = 50; }
+        if(motor == 5) { MotorOut5 = 50; }
+        if(motor == 6) { MotorOut6 = 50; }
+      }
+
+      output_motor_ppm();
+    }
   }
 
   // Stick Centering Test
