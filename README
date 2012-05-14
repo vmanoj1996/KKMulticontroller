@@ -2,7 +2,7 @@ KK board flight controller software for AVR microcontrollers
 
 (re)written by Dane Gardner
 
-Based on  Simon Kirby https://github.com/sim-/kk
+Based on KK by Simon Kirby <https://github.com/sim-/kk>
 Based on XXcontrol_KR_v1.5 by Minsoo Kim
 Based on XXcontrol by Mike Barton
 Based on excellent assembly code by Rolf R Bakke (kapteinkuk)
