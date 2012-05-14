@@ -16,7 +16,5 @@ kk.s: kk.c io_cfg.h typedefs.h
 	avr-gcc -mmcu=atmega328p -Wall -g3 -gdwarf-2 -std=gnu99 -DF_CPU=8000000 -Os -fsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -S -o $@ $<
 
 program: kk.hex
-	avrdude -C avrdude.conf -c usbasp-clone  -p m328p -P usb -B 8 -e -U flash:w:$<:i
-
-#shell:
-#	avrdude -c dragon_isp -p m88 -P usb -t
+	avrdude.exe -C avrdude.conf -p m328p -P usb -c usbasp-clone -B 8 -e -U lfuse:w:0xe2:m -U hfuse:w:0xd9:m
+	avrdude.exe -C avrdude.conf -p m328p -P usb -c usbasp-clone -B 8 -e -U flash:w:$<:i 
