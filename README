@@ -1,0 +1,134 @@
+KK board flight controller software for AVR microcontrollers
+
+(re)written by Dane Gardner
+
+Based on  Simon Kirby https://github.com/sim-/kk
+Based on XXcontrol_KR_v1.5 by Minsoo Kim
+Based on XXcontrol by Mike Barton
+Based on excellent assembly code by Rolf R Bakke (kapteinkuk)
+With ideas from Rune Hasvold (CyCrow) and OlliW on rcgroups
+Thanks, everyone!
+
+NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK. Always test
+without propellers! Please do not ship derivative works without
+source; keep this code open as Rolf first so kindly released his
+design and code to the community.
+
+Should fit on 48, 88, 168, and 328. I've tested TRICOPTER mode on an
+ATmega88A. You may wish to use avrdude -t to "dump calibration" and
+check timings on a digital scope. Temperature and voltage shift the
+oscillator frequency a little, and each chip responds differently.
+See doc8271.pdf page 401.
+
+I notice a few microseconds of output jitter still with the internal
+oscillator. It seems that only an external resonator or crystal will
+solve this, but those pins are currently used for Rx and the LED, and
+the Rx pin cannot be moved to another pin that does not share another
+PCINT unless RESET is used for that purpose. If using all hardware
+PPM, it may be acceptable to have a more expensive interrupt handler
+that simply logs the interrupt time and pin states and do the rest of
+the processing in RxGetChannels().
+
+See http://www.kkmulticopter.com/
+
+Hardware PPM supported on motor outputs M1, M2, M5 and M6; software
+PPM on M3 and M4 (Rx interrupts can cause some jitter). M3 and M4
+outputs will be copied to M5 and M6, when not otherwise used, to allow
+use of full hardware PPM.
+
+General motor output setup:
+
+Single
+            M1 CCW
+            |
+            |
+
+            M2 (Servo)
+            |
+            |
+     M5 ---- ---- M3
+    (Servo) | (Servo)
+            |
+            M4 (Servo)
+
+Dual
+            M1 CCW
+            |
+            M2 CW
+            |
+
+            |
+            |
+  M5/M3 ----+----
+    (Servo) |
+            |
+         M6/M4 (Servo)
+
+Twin
+         / --- \
+       /    |    \
+     M1 CW  |     M2 CCW
+            |
+     M3     |       M4
+   (Servo)  |   (Servo)
+            |
+            |
+            M5 (Tail Servo, Optional)
+            M6 (Tail Servo Reverse, Optional)
+
+Tri
+      M1 CW     M2 CCW
+        \       /
+         \.---./
+          |   |
+          `---'
+            |
+            |M4/M6 (Tail Servo)
+            M3/M5 CCW
+
+Quad-+
+           M1 CW
+            |
+            |
+            |
+          .---.
+M2 CCW----|   |----M3/M5 CCW
+          `---'
+            |
+            |
+            |
+          M4/M6 CW
+
+Quad-X
+
+       M1 CW    M2 CCW
+        \        /
+          \.--./
+           |  |
+          /`--'\
+        /        \
+    M4/M6 CCW   M3/M5 CW
+
+Hex
+            M1 CW
+            |
+    M6 CCW  |     M2 CCW
+      \     |     /
+        \ .---. /
+         -|   |-
+        / `---' \
+      /     |     \
+    M5 CW   |     M3 CW
+            |
+            M4 CCW
+
+Y6
+
+     M1,4        M2,5    M1->3 = CW
+        \       /        M4->6 = CCW
+         \.---./
+          |   |
+          `---'
+            |
+            |
+           M3,6
