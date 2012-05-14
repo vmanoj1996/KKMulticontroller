@@ -80,7 +80,7 @@ OBJDIR = ./.obj/
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c motors.c gyros.c receiver.c settings.c
+SRC = $(TARGET).c motors.c gyros.c receiver.c settings.c pid.c
 
 
 # List C++ source files here. (C dependencies are automatically generated.)
