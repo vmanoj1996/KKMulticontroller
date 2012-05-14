@@ -1,25 +1,4 @@
-/* Multicopter Type */
-//#define SINGLE_COPTER
-//#define DUAL_COPTER
-//#define TWIN_COPTER
-//#define TRI_COPTER
-//#define QUAD_COPTER
-#define QUAD_X_COPTER
-//#define Y4_COPTER
-//#define HEX_COPTER
-//#define Y6_COPTER
-
-#include <avr/io.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <util/delay.h>
-#include <avr/interrupt.h>
-#include <avr/eeprom.h>
-
-#include "typedefs.h"
-#include "io_cfg.h"
-
+#include "config.h"
 #include "gyros.h"
 #include "settings.h"
 #include "receiver.h"
@@ -29,6 +8,10 @@ bool Armed;
 
 static int16_t integral[3];          // PID integral term
 static int16_t last_error[3];        // Last proportional error
+
+static void setup(void);
+static void loop(void);
+int main(void);
 
 static void setup()
 {
