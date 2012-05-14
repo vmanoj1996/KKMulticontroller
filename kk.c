@@ -1,6 +1,8 @@
 /*
  * KK board flight controller software for AVR microcontrollers
+ * Written by Dane Gardner
  *
+ * Based on  Simon Kirby https://github.com/sim-/kk
  * Based on XXcontrol_KR_v1.5 by Minsoo Kim
  * Based on XXcontrol by Mike Barton
  * Based on excellent assembly code by Rolf R Bakke (kapteinkuk)
@@ -162,7 +164,7 @@
 
 bool Armed;
 
-static int16_t integral[3];        // PID integral term
+static int16_t integral[3];          // PID integral term
 static int16_t last_error[3];        // Last proportional error
 
 static void setup()
@@ -204,39 +206,17 @@ static void setup()
 
   ReadGainPots();
   ReadGainPots();
-
   bool pitchMin = (GainInADC[PITCH] < (ADC_MAX * 5) / 100);    // 5% threshold
   bool rollMin =  (GainInADC[ROLL]  < (ADC_MAX * 5) / 100);    // 5% threshold
   bool yawMin =   (GainInADC[YAW]   < (ADC_MAX * 5) / 100);    // 5% threshold
-  
-  // clear config
-  if(pitchMin && rollMin && yawMin) {
-      settingsClearAll();
-  }
 
-  // Motor identification
-  if(pitchMin && yawMin) {
-      motorsIdentify();
-  }
-
-  if(pitchMin && rollMin) { /* FUTURE USE */ }
-
-  if(rollMin && yawMin)   { /* FUTURE USE */ }
-
-  // Stick Centering Test
-  if(pitchMin) {
-    receiverStickCenter();
-  }
-
-  // Gyro direction reversing
-  if(rollMin) {
-    gyrosReverse();
-  }
-
-  // ESC throttle calibration
-  if(yawMin) {
-    motorsThrottleCalibration();
-  }
+  if(pitchMin && rollMin && yawMin) { settingsClearAll(); }             // Clear config
+  else if(pitchMin && yawMin)       { motorsIdentify(); }               // Motor identification
+//  else if(pitchMin && rollMin)      { }                                 // Future use
+//  else if(rollMin && yawMin)        { }                                 // Future use
+  else if(pitchMin)                 { receiverStickCenter(); }          // Stick Centering Test
+  else if(rollMin)                  { gyrosReverse(); }                 // Gyro direction reversing
+  else if(yawMin)                   { motorsThrottleCalibration(); }    // ESC throttle calibration
 }
 
 static inline void loop()
