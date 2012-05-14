@@ -574,10 +574,6 @@ static void setup()
       delay += (uint8_t)(TCNT2 - time);
       time = TCNT2;
 
-      // 3Sec / 0.000128 = 23437 = 0x5B8D or
-      // 2.5Sec / 0.000128 = 19531 = 0x4C4B
-      // 0.5Sec / 0.000128 = 3906 = 0x0F42
-
       if(escInit) {
         if(delay > 23437) {    // 3.00 second delay (3.00 / .000128 = 23437.5)
           escInit = false;
