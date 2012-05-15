@@ -5,7 +5,7 @@
 
 enum PID_ArrayIndex { PID_ROLL = 0, PID_PITCH, PID_YAW };
 
-extern struct PID_pidObject {
+extern struct PID_PidObject {
   float measured;
 
   float setPoint;
@@ -21,7 +21,7 @@ extern struct PID_pidObject {
   float pidOutput;
 } PID_Array[3];
 
-
-void PID_calculate(struct PID_pidObject *pidObject);
+void PID_Calculate(struct PID_pidObject *pidObject);
+void PID_Calculate(void);
 
 #endif

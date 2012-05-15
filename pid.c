@@ -2,14 +2,14 @@
 
 #include "time.h"
 
-struct PID_pidObject PID_Array[3];
+struct PID_PidObject PID_Array[3];
 
-void PID_calculate(struct PID_pidObject *pidObject)
+void PID_Calculate(struct PID_pidObject *pidObject)
 {
-  uint64_t time = millis();
+  uint64_t time = TIME_Millis();
   uint64_t dt = time - pidObject->lastTime;
 
-  float error = pidObejct->measured - pidObject->setPoint;
+  float error = pidObject->measured - pidObject->setPoint;
 
   // Calculate product
   float output = pidObject->kP * error;
@@ -27,4 +27,18 @@ void PID_calculate(struct PID_pidObject *pidObject)
   pidObject->integral = integral;
   pidObject->lastTime = time;
   pidObject->lastError = error;
+}
+
+void PID_Calculate()
+{
+  for(uint8_t i = 0; i < sizeof(PID_Array); ++i) {
+    PID_calculate(PID_Array[i]);
+  }
+}
+
+void PID_Setup()
+{
+  for(uint8_t i = 0; i < sizeof(PID_Array); ++i) {
+    PID_Array[i]->lastTime = TIME_Millis();
+  }
 }
