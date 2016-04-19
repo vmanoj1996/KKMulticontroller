@@ -10,12 +10,6 @@
  * ESC PPM output rate -
  * Do not set lower than 122 Hz without a slower/higher t0/t1 clkdiv
  * as the period needs to fit in the 16-bit timer.
-##############
-this numberis the number of time an esc is updated ~2.2ms.
-So think this can reduce the sudden variation in pulses that is happening currently at round 50ms pulses given by Servo library
-Check it out
-###############
-
  */
 //#define ESC_RATE 300  // in Hz
 //#define ESC_RATE 400  // in Hz (at SINGLE_COPTER Only)
